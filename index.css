@@ -1,0 +1,72 @@
+body{
+    margin: 0;
+}
+.app{
+    padding: 20px 0 0 0;
+}
+.opacity1{
+    opacity: 1 !important;
+}
+.bg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width:100vw;
+    height: 100vh;
+    background-color:#eee;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    filter: blur(7px);
+    opacity: 0;
+    transition: opacity .3s;
+    /* transition-delay: opacity .3s; */
+}
+.inputbox{
+    display: block;
+    margin: 0 auto 50px;
+    height: 40px;
+    width: 50vw;
+    background: white;
+    display: flex;
+    border-radius: 5px;
+    align-items: center;
+    border: 1px solid #ccc;
+}
+.inputbox input{
+    width: 80%;
+    height: 50%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: black;
+    text-indent: 20px;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+.inputbox input::placeholder {
+    color: darkgray;
+}
+.imgboxBorder{
+    display: block;
+    width: 50%;
+    margin: 0 auto 150px;
+    padding: 10px;
+    background: repeating-linear-gradient(-45deg,transparent,transparent 25px,rgba(255,255,255,.8) 25px,rgba(255,255,255,.8) 50px) ;
+}
+.imgboxBorder .imgbox{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    background: white;
+}
+.imgboxBorder .imgbox img{
+    width: 100%;
+    height: auto;
+    background: white;
+    font-size: 28px;
+    border-radius: 5px;
+    transition: opacity .3s;
+}
+

@@ -1,27 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class='app'>
-        <div class="box">
-            {{message}}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>線上圖片預覽</title>
+    <link rel="stylesheet" href="./index.css" />
+    <link
+      rel="icon"
+      href="https://pic.pimg.tw/milo0922/1478840717-2671712461_n.png"
+      type="image/ico"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <div
+        class="bg"
+        v-bind:style="{backgroundImage:'url('+img1Url+')'}"
+        v-bind:class="{opacity1:showImg1}"
+      ></div>
+      <div
+        class="bg"
+        v-bind:style="{backgroundImage:'url('+img2Url+')'}"
+        v-bind:class="{opacity1:showImg2}"
+      ></div>
+      <div class="inputbox">
+        <input
+          v-on:input="changeUrl"
+          v-model="inputText"
+          type="text"
+          name=""
+          id=""
+          placeholder="請輸入..."
+        />
+      </div>
+      <div class="imgboxBorder">
+        <div class="imgbox">
+          <img
+            :src="showImg1?img1Url:img2Url"
+            alt="輸入正確的網址即可顯示圖片"
+          />
         </div>
+      </div>
     </div>
+    <!-- http://pic1.cxtuku.com/00/16/05/b374c3692926.jpg -->
+    <!-- http://img.inmywordz.com/uploads/20171201210909_70.png -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
-        var app=new Vue({
-            el:'.app',
-            data:{
-                message:'hello world!',
-                score: 80
+      var app = new Vue({
+        el: ".app",
+        data: {
+          inputText: "",
+          img1Url:
+            "http://5b0988e595225.cdn.sohucs.com/images/20180711/68072555019d41189a0cebfad85617d2.jpg",
+          img2Url: "",
+          showImg1: true,
+          showImg2: false,
+          time: parseInt(new Date().getTime())
+        },
+        methods: {
+          changeUrl: function() {
+            let nowTime = parseInt(new Date().getTime());
+            if (
+              (nowTime - this.time > 3500 &&
+                this.inputText.slice(-3) === "jpg") ||
+              this.inputText.slice(-3) === "png"
+            ) {
+              console.log("run");
+              this.time = nowTime;
+
+              //得到新圖片（圖二）
+              if (this.showImg1 === true) {
+                //從圖一切換到圖二
+
+                this.img2Url = this.inputText; //準備圖二的url
+                this.showImg2 = true; //解除圖二的隱藏狀態,需時0.3秒
+                setTimeout(() => {
+                  this.showImg1 = false; //圖一隱藏
+                }, 300);
+                return;
+              }
+              if (this.showImg2 === true) {
+                this.img1Url = this.inputText;
+                this.showImg1 = true;
+                setTimeout(() => {
+                  this.showImg2 = false;
+                }, 300);
+
+                return;
+              }
             }
-        })
+          }
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
