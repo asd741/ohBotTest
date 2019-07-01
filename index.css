@@ -132,13 +132,13 @@ body {
 .scrollTop1 {
     transform: translateY(25%);
     opacity: 0;
-    animation: scrollTop1 .4s linear .2s 1 forwards;
+    animation: scrollTop1 .5s linear .5s 1 forwards;
     transition: .3;
 }
 
 .scrollTop2 {
     transform: translateY(15%);
     opacity: 0;
-    animation: scrollTop2 .5s ease-in-out .7s 1 forwards;
+    animation: scrollTop2 .5s ease-in-out 1s 1 forwards;
     transition: .3;
 }
