@@ -111,9 +111,13 @@ body {
     color: #bbb;
     font-size: 35px;
     border-radius: 5px;
-    transition: opacity 1s;
+    transition: opacity 1s,fontSize .3s;
 }
-
+@media screen and (min-width:530px){
+    .imgboxBorder .imgbox img{
+        font-size: 50px;
+    }
+}
 .search_icon {
     margin: 0 15px 0 0;
     font-size: 25px;
