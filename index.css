@@ -6,15 +6,12 @@ body {
     padding: 35px 0 0 0;
 }
 
-.opacity1 {
-    opacity: 1 !important;
-}
 
 .bg {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: -1;
+    z-index: -2;
     width: 100vw;
     height: 100vh;
     background-color: #eee;
@@ -22,9 +19,6 @@ body {
     background-position: center center;
     background-size: cover;
     filter: blur(7px);
-    opacity: 0;
-    transition: opacity 1s;
-    transition-delay: .15s;
 }
 
 .inputbox {
@@ -118,7 +112,7 @@ body {
 }
 @media screen and (min-width:530px){
     .imgboxBorder .imgbox img{
-        font-size: 50px;
+        font-size: 60px;
     }
 }
 .search_icon {
@@ -138,6 +132,16 @@ body {
     color: transparent;
     background-image: url('http://i.epochtimes.com/assets/uploads/2017/02/star-e1486021116898.jpg');
     background-position: center;
+}
+
+@keyframes BGfadeOut {
+    0% {
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+        z-index: -1;
+    }
 }
 
 @keyframes scrollTop1 {
@@ -162,6 +166,16 @@ body {
         transform: translateY(0%);
         opacity: 1;
     }
+}
+
+.BGfadeOut{
+    z-index: -1;
+    animation: BGfadeOut 1s linear .3s 1 forwards;
+}
+
+.BGfadeIn{
+    z-index: -2;
+    opacity: 1;
 }
 
 .scrollTop1 {

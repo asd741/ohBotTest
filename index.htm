@@ -21,12 +21,12 @@
       <div
         class="bg"
         v-bind:style="{backgroundImage:'url('+img1Url+')'}"
-        v-bind:class="{opacity1:showImg1}"
+        v-bind:class="{ BGfadeIn: showImg1, 'BGfadeOut': showImg2 }"
       ></div>
       <div
         class="bg"
         v-bind:style="{backgroundImage:'url('+img2Url+')'}"
-        v-bind:class="{opacity1:showImg2}"
+        v-bind:class="{ BGfadeIn: showImg2, 'BGfadeOut': showImg1 }"
       ></div>
       <h1 id="main_title" class="scrollTop2">線上圖片預覽</h1>
       <section class="inputbox scrollTop1">
@@ -76,6 +76,7 @@
                 return;
               }
               if (this.showImg2 === true) {
+                //從圖二切換到圖一
                 this.img1Url = this.inputText;
                 this.showImg1 = true;
                 this.showImg2 = false;
