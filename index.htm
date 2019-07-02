@@ -41,8 +41,26 @@
         <i class="fab fa-searchengin search_icon"></i>
       </section>
       <section class="imgboxBorder scrollTop2">
-        <div class="imgbox">
+        <div class="imgbox" v-if="isMobi">
           <img :src="showImg1?img1Url:img2Url" alt="圖片預覽失敗，無效的路徑" />
+        </div>
+        <div class="imgbox" v-else>
+          <div class="fragmentbox" ref="fragmentbox">
+            <span
+              v-if="createFragment===true&&showImg1!==true"
+              v-for="(item,index) in fragment.amount"
+              class="fragment"
+              v-bind:style="{backgroundImage:'url('+img1Url+')',width:fragment.width,height:fragment.height,backgroundPositionX:fragment.position[index].x,backgroundPositionY:fragment.position[index].y,transitionDelay:Math.random()*1.5+'s',opacity:fragment.fadeOut?0:1}"
+            >
+            </span>
+            <span
+              v-if="createFragment===true&&showImg2!==true"
+              v-for="(item,index) in fragment.amount"
+              class="fragment"
+              v-bind:style="{backgroundImage:'url('+img2Url+')',width:fragment.width,height:fragment.height,backgroundPositionX:fragment.position[index].x,backgroundPositionY:fragment.position[index].y,transitionDelay:Math.random()*1.5+'s',opacity:fragment.fadeOut?0:1}"
+            >
+            </span>
+          </div>
         </div>
       </section>
     </div>
@@ -59,20 +77,87 @@
           img2Url:
             "http://i1.bangqu.com/r2/news/20171206/3048724934326a6d4765.jpg",
           showImg1: true,
-          showImg2: false
+          showImg2: false,
+          naturalHeight: "",
+          naturalWidth: "",
+          isMobi: undefined,
+          createFragment: false,
+          fragment: {
+            amount: "",
+            row: 28,
+            column: 17,
+            width: "",
+            height: "",
+            position: [],
+            fadeOut: false
+          }
         },
         methods: {
+          getImgNaturalInfo: function() {
+            oImg = document.createElement("img");
+            oImg.src = this.showImg1 ? this.img1Url : this.img2Url;
+            this.naturalHeight = oImg.naturalHeight;
+            this.naturalWidth = oImg.naturalWidth;
+            // this.fragment.scaleH =
+            //   (this.naturalHeight / this.$refs.fragmentbox.offsetHeight)*100+'%';
+            // this.fragment.scaleW =
+            //   (this.naturalWidth / this.$refs.fragmentbox.offsetWidth)*100+'%';
+            //   console.log(this.fragment.scaleW,this.fragment.scaleH)
+          },
+          handleFragment: async function() {
+            let fragment = this.fragment;
+            fragment.amount = fragment.row * fragment.column;
+            //碎片寬  容器寬除以一排碎片的數量  碎片高  容器高除以一列碎片的數量    
+            fragment.height =
+              this.$refs.fragmentbox.offsetHeight / fragment.column + "px";
+            fragment.width =
+              this.$refs.fragmentbox.offsetWidth / fragment.row + "px";
+            fragment.position=[];
+            
+            for (
+              let i = 0,
+                position = fragment.position,
+                w = parseFloat(fragment.width),
+                h = parseFloat(fragment.height),
+                length = fragment.column;
+              i < length;
+              i++
+            ) {
+              for (let j = 0, length = fragment.row; j < length; j++) {
+                position.push({ x: -w * j + "px", y: -h * i + "px" });//每個碎片的圖片定位
+              }
+            }
+            this.createFragment = true;
+            await setTimeout(() => {
+              fragment.fadeOut = true;
+            }, 1300);
+            if (this.showImg1 === true) {
+              this.$refs.fragmentbox.style.backgroundImage =
+                "url(" + this.img1Url + ")";
+            }
+            if (this.showImg2 === true) {
+              this.$refs.fragmentbox.style.backgroundImage =
+                "url(" + this.img2Url + ")";
+            }
+            fragment.fadeOut = false;
+            
+          },
           changeUrl: function() {
             if (
               this.inputText.slice(-3) === "jpg" ||
               this.inputText.slice(-3) === "png"
             ) {
               //得到新圖片（圖二）
+
               if (this.showImg1 === true) {
                 //從圖一切換到圖二
-                this.img2Url = this.inputText; //準備圖二的url
-                this.showImg2 = true; //解除圖二的隱藏狀態
-                this.showImg1 = false; //圖一隱藏
+                this.img2Url = this.inputText;
+                this.showImg2 = true;
+                this.showImg1 = false;
+                if (this.isMobi !== true) {
+                  this.getImgNaturalInfo();
+                  this.handleFragment();
+                }
                 return;
               }
               if (this.showImg2 === true) {
@@ -80,9 +165,24 @@
                 this.img1Url = this.inputText;
                 this.showImg1 = true;
                 this.showImg2 = false;
+                if (this.isMobi !== true) {
+                  this.getImgNaturalInfo();
+                  this.handleFragment();
+                }
                 return;
               }
             }
+          }
+        },
+        mounted: function() {
+          if (
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+              navigator.userAgent
+            )
+          ) {
+            this.isMobi = true;
+          } else {
+            this.isMobi = false;
           }
         }
       });
