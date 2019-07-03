@@ -78,8 +78,8 @@
             "http://i1.bangqu.com/r2/news/20171206/3048724934326a6d4765.jpg",
           showImg1: true,
           showImg2: false,
-          naturalHeight: "",
-          naturalWidth: "",
+          // naturalHeight: "",
+          // naturalWidth: "",
           isMobi: undefined,
           createFragment: false,
           fragment: {
@@ -94,12 +94,12 @@
           }
         },
         methods: {
-          getImgNaturalInfo: function() {
-            oImg = document.createElement("img");
-            oImg.src = this.showImg1 ? this.img1Url : this.img2Url;
-            this.naturalHeight = oImg.naturalHeight;
-            this.naturalWidth = oImg.naturalWidth;
-          },
+          // getImgNaturalInfo: function() {
+          //   oImg = document.createElement("img");
+          //   oImg.src = this.showImg1 ? this.img1Url : this.img2Url;
+          //   this.naturalHeight = oImg.naturalHeight;
+          //   this.naturalWidth = oImg.naturalWidth;
+          // },
           handleFragment: async function() {
             let fragment = this.fragment;
             //碎片寬  容器寬除以一排碎片的數量  碎片高  容器高除以一列碎片的數量
@@ -186,7 +186,7 @@
                 this.showImg2 = true;
                 this.showImg1 = false;
                 // if (this.isMobi !== true) {
-                this.getImgNaturalInfo();
+                // this.getImgNaturalInfo();
                 this.handleFragment();
                 // }
                 return;
@@ -197,7 +197,7 @@
                 this.showImg1 = true;
                 this.showImg2 = false;
                 // if (this.isMobi !== true) {
-                this.getImgNaturalInfo();
+                // this.getImgNaturalInfo();
                 this.handleFragment();
                 // }
                 return;
