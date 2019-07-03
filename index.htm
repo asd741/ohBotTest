@@ -41,23 +41,23 @@
         <i class="fab fa-searchengin search_icon"></i>
       </section>
       <section class="imgboxBorder scrollTop2">
-        <div class="imgbox" v-if="isMobi">
+        <!-- <div class="imgbox" v-if="isMobi">
           <img :src="showImg1?img1Url:img2Url" alt="圖片預覽失敗，無效的路徑" />
-        </div>
-        <div class="imgbox" v-else>
+        </div> -->
+        <div class="imgbox">
           <div class="fragmentbox" ref="fragmentbox">
             <span
               v-if="createFragment===true&&showImg1!==true"
               v-for="(item,index) in fragment.amount"
               class="fragment"
-              v-bind:style="{backgroundImage:'url('+img1Url+')',width:fragment.width,height:fragment.height,backgroundPositionX:fragment.position[index].x,backgroundPositionY:fragment.position[index].y,transitionDelay:Math.random()*1.5+'s',opacity:fragment.fadeOut?0:1}"
+              v-bind:style="{backgroundImage:'url('+img1Url+')',backgroundSize:fragment.BGsize,width:fragment.width,height:fragment.height,backgroundPositionX:fragment.position[index].x,backgroundPositionY:fragment.position[index].y,transitionDelay:Math.random()*1.5+'s',opacity:fragment.fadeOut?0:1}"
             >
             </span>
             <span
               v-if="createFragment===true&&showImg2!==true"
               v-for="(item,index) in fragment.amount"
               class="fragment"
-              v-bind:style="{backgroundImage:'url('+img2Url+')',width:fragment.width,height:fragment.height,backgroundPositionX:fragment.position[index].x,backgroundPositionY:fragment.position[index].y,transitionDelay:Math.random()*1.5+'s',opacity:fragment.fadeOut?0:1}"
+              v-bind:style="{backgroundImage:'url('+img2Url+')',backgroundSize:fragment.BGsize,width:fragment.width,height:fragment.height,backgroundPositionX:fragment.position[index].x,backgroundPositionY:fragment.position[index].y,transitionDelay:Math.random()*1.5+'s',opacity:fragment.fadeOut?0:1}"
             >
             </span>
           </div>
@@ -83,13 +83,14 @@
           isMobi: undefined,
           createFragment: false,
           fragment: {
-            amount: "",
-            row: 28,
-            column: 17,
+            amount: 0,
+            row: 0,
+            column: 0,
             width: "",
             height: "",
             position: [],
-            fadeOut: false
+            fadeOut: false,
+            BGsize: ""
           }
         },
         methods: {
@@ -98,22 +99,53 @@
             oImg.src = this.showImg1 ? this.img1Url : this.img2Url;
             this.naturalHeight = oImg.naturalHeight;
             this.naturalWidth = oImg.naturalWidth;
-            // this.fragment.scaleH =
-            //   (this.naturalHeight / this.$refs.fragmentbox.offsetHeight)*100+'%';
-            // this.fragment.scaleW =
-            //   (this.naturalWidth / this.$refs.fragmentbox.offsetWidth)*100+'%';
-            //   console.log(this.fragment.scaleW,this.fragment.scaleH)
           },
           handleFragment: async function() {
             let fragment = this.fragment;
+            //碎片寬  容器寬除以一排碎片的數量  碎片高  容器高除以一列碎片的數量
+            fragment.containerW = this.$refs.fragmentbox.offsetWidth;
+            fragment.containerH = this.$refs.fragmentbox.offsetHeight;
+            // 984 584 420 260容器寬的可能性
+            //560 440 420 260容器高的可能性
+            //1.75 1.32 1 1
+            // console.log(fragment.containerW,fragment.containerH);
+
+            switch (fragment.containerW) {
+              case 984:
+                fragment.row = 26;
+                fragment.column = 15;
+                // console.log("最大");
+                break;
+              case 584:
+                fragment.row = 20;
+                fragment.column = 16;
+                // console.log("次大");
+                break;
+              case 420:
+                fragment.row = 16;
+                fragment.column = 16;
+                // console.log("次小");
+                break;
+              case 260:
+                if (this.isMobi === false) {
+                  fragment.row = 12;
+                  fragment.column = 12;
+                }
+                if (this.isMobi === true) {
+                  fragment.row = 8; //手機效能考量  降低負荷量
+                  fragment.column = 8;
+                }
+                // console.log("最小");
+            }
+            // console.log(fragment);
             fragment.amount = fragment.row * fragment.column;
-            //碎片寬  容器寬除以一排碎片的數量  碎片高  容器高除以一列碎片的數量    
-            fragment.height =
-              this.$refs.fragmentbox.offsetHeight / fragment.column + "px";
-            fragment.width =
-              this.$refs.fragmentbox.offsetWidth / fragment.row + "px";
-            fragment.position=[];
-            
+            fragment.height = fragment.containerH / fragment.column + "px";
+            fragment.width = fragment.containerW / fragment.row + "px";
+            fragment.BGsize = `${fragment.containerW}px ${
+              fragment.containerH
+            }px`;
+            fragment.position = [];
+
             for (
               let i = 0,
                 position = fragment.position,
@@ -124,7 +156,7 @@
               i++
             ) {
               for (let j = 0, length = fragment.row; j < length; j++) {
-                position.push({ x: -w * j + "px", y: -h * i + "px" });//每個碎片的圖片定位
+                position.push({ x: -w * j + "px", y: -h * i + "px" }); //每個碎片的圖片定位
               }
             }
             this.createFragment = true;
@@ -140,7 +172,6 @@
                 "url(" + this.img2Url + ")";
             }
             fragment.fadeOut = false;
-            
           },
           changeUrl: function() {
             if (
@@ -154,10 +185,10 @@
                 this.img2Url = this.inputText;
                 this.showImg2 = true;
                 this.showImg1 = false;
-                if (this.isMobi !== true) {
-                  this.getImgNaturalInfo();
-                  this.handleFragment();
-                }
+                // if (this.isMobi !== true) {
+                this.getImgNaturalInfo();
+                this.handleFragment();
+                // }
                 return;
               }
               if (this.showImg2 === true) {
@@ -165,10 +196,10 @@
                 this.img1Url = this.inputText;
                 this.showImg1 = true;
                 this.showImg2 = false;
-                if (this.isMobi !== true) {
-                  this.getImgNaturalInfo();
-                  this.handleFragment();
-                }
+                // if (this.isMobi !== true) {
+                this.getImgNaturalInfo();
+                this.handleFragment();
+                // }
                 return;
               }
             }
