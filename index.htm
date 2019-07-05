@@ -41,9 +41,6 @@
         <i class="fab fa-searchengin search_icon"></i>
       </section>
       <section class="imgboxBorder scrollTop2">
-        <!-- <div class="imgbox" v-if="isMobi">
-          <img :src="showImg1?img1Url:img2Url" alt="圖片預覽失敗，無效的路徑" />
-        </div> -->
         <div class="imgbox">
           <div class="fragmentbox" ref="fragmentbox">
             <span
@@ -78,10 +75,9 @@
             "http://i1.bangqu.com/r2/news/20171206/3048724934326a6d4765.jpg",
           showImg1: true,
           showImg2: false,
-          // naturalHeight: "",
-          // naturalWidth: "",
           isMobi: undefined,
           createFragment: false,
+          viewFix:false,
           fragment: {
             amount: 0,
             row: 0,
@@ -90,26 +86,22 @@
             height: "",
             position: [],
             fadeOut: false,
-            BGsize: ""
+            BGsize: "",
+            containerH:'',
+            containerW:'',
           }
         },
         methods: {
-          // getImgNaturalInfo: function() {
-          //   oImg = document.createElement("img");
-          //   oImg.src = this.showImg1 ? this.img1Url : this.img2Url;
-          //   this.naturalHeight = oImg.naturalHeight;
-          //   this.naturalWidth = oImg.naturalWidth;
-          // },
           handleFragment: async function() {
             let fragment = this.fragment;
             //碎片寬  容器寬除以一排碎片的數量  碎片高  容器高除以一列碎片的數量
             fragment.containerW = this.$refs.fragmentbox.offsetWidth;
             fragment.containerH = this.$refs.fragmentbox.offsetHeight;
+
             // 984 584 420 260容器寬的可能性
             //560 440 420 260容器高的可能性
             //1.75 1.32 1 1
-            // console.log(fragment.containerW,fragment.containerH);
-
+            
             switch (fragment.containerW) {
               case 984:
                 fragment.row = 26;
@@ -135,9 +127,7 @@
                   fragment.row = 8; //手機效能考量  降低負荷量
                   fragment.column = 8;
                 }
-                // console.log("最小");
             }
-            // console.log(fragment);
             fragment.amount = fragment.row * fragment.column;
             fragment.height = fragment.containerH / fragment.column + "px";
             fragment.width = fragment.containerW / fragment.row + "px";
@@ -162,6 +152,7 @@
             this.createFragment = true;
             await setTimeout(() => {
               fragment.fadeOut = true;
+              this.viewFix=false;
             }, 1300);
             if (this.showImg1 === true) {
               this.$refs.fragmentbox.style.backgroundImage =
@@ -172,6 +163,9 @@
                 "url(" + this.img2Url + ")";
             }
             fragment.fadeOut = false;
+            await setTimeout(() => {
+              this.viewFix = true;
+            }, 3000);
           },
           changeUrl: function() {
             if (
@@ -185,10 +179,7 @@
                 this.img2Url = this.inputText;
                 this.showImg2 = true;
                 this.showImg1 = false;
-                // if (this.isMobi !== true) {
-                // this.getImgNaturalInfo();
                 this.handleFragment();
-                // }
                 return;
               }
               if (this.showImg2 === true) {
@@ -196,10 +187,7 @@
                 this.img1Url = this.inputText;
                 this.showImg1 = true;
                 this.showImg2 = false;
-                // if (this.isMobi !== true) {
-                // this.getImgNaturalInfo();
                 this.handleFragment();
-                // }
                 return;
               }
             }
